@@ -1,0 +1,9 @@
+c:\users\mateus\documents\visual studio 2015\Projects\BioInformaticaProj\BioInformaticaProj\obj\Debug\BioInformaticaProj.Form1.resources
+c:\users\mateus\documents\visual studio 2015\Projects\BioInformaticaProj\BioInformaticaProj\obj\Debug\BioInformaticaProj.csproj.GenerateResource.Cache
+C:\Users\Mateus\documents\visual studio 2015\Projects\BioInformaticaProj\BioInformaticaProj\obj\Debug\BioInformaticaProj.csprojResolveAssemblyReference.cache
+C:\Users\Mateus\documents\visual studio 2015\Projects\BioInformaticaProj\BioInformaticaProj\bin\Debug\OriLocatorProj.exe.config
+C:\Users\Mateus\documents\visual studio 2015\Projects\BioInformaticaProj\BioInformaticaProj\bin\Debug\OriLocatorProj.exe
+C:\Users\Mateus\documents\visual studio 2015\Projects\BioInformaticaProj\BioInformaticaProj\bin\Debug\OriLocatorProj.pdb
+C:\Users\Mateus\documents\visual studio 2015\Projects\BioInformaticaProj\BioInformaticaProj\obj\Debug\OriLocatorProj.Properties.Resources.resources
+C:\Users\Mateus\documents\visual studio 2015\Projects\BioInformaticaProj\BioInformaticaProj\obj\Debug\OriLocatorProj.exe
+C:\Users\Mateus\documents\visual studio 2015\Projects\BioInformaticaProj\BioInformaticaProj\obj\Debug\OriLocatorProj.pdb
