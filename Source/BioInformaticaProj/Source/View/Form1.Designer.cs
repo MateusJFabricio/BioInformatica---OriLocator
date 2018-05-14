@@ -29,9 +29,11 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.LineAnnotation lineAnnotation1 = new System.Windows.Forms.DataVisualization.Charting.LineAnnotation();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -74,6 +76,9 @@
             this.lblMensagemGrafico = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblProgressoGenoma = new System.Windows.Forms.Label();
+            this.lblPorcentagem = new System.Windows.Forms.Label();
+            this.btnCancelar = new System.Windows.Forms.Button();
             this.lblBarraProgressoDescricao = new System.Windows.Forms.Label();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.label1 = new System.Windows.Forms.Label();
@@ -90,7 +95,9 @@
             this.textTituloGenoma = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.btnCancelar = new System.Windows.Forms.Button();
+            this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
+            this.timer = new System.Windows.Forms.Timer(this.components);
+            this.timerProgressoGenoma = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip2.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -493,7 +500,18 @@
             // 
             // gcSkew
             // 
-            chartArea1.AxisX.ArrowStyle = System.Windows.Forms.DataVisualization.Charting.AxisArrowStyle.Triangle;
+            lineAnnotation1.AnchorX = 2D;
+            lineAnnotation1.AnchorY = 20D;
+            lineAnnotation1.AxisXName = "ChartArea1\\rX";
+            lineAnnotation1.ClipToChartArea = "ChartArea1";
+            lineAnnotation1.Height = -10D;
+            lineAnnotation1.LineColor = System.Drawing.Color.Red;
+            lineAnnotation1.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.DashDot;
+            lineAnnotation1.LineWidth = 2;
+            lineAnnotation1.Name = "LineAnnotation1";
+            lineAnnotation1.StartCap = System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle.Arrow;
+            lineAnnotation1.YAxisName = "ChartArea1\\rY";
+            this.gcSkew.Annotations.Add(lineAnnotation1);
             chartArea1.AxisX2.ArrowStyle = System.Windows.Forms.DataVisualization.Charting.AxisArrowStyle.SharpTriangle;
             chartArea1.Name = "ChartArea1";
             this.gcSkew.ChartAreas.Add(chartArea1);
@@ -508,13 +526,20 @@
             this.gcSkew.Name = "gcSkew";
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             series1.Legend = "Legend1";
-            series1.LegendText = "Desaminacao GC";
+            series1.LegendText = "Desaminacao GC - Genoma";
             series1.Name = "desaminacao_gc";
             this.gcSkew.Series.Add(series1);
             this.gcSkew.Size = new System.Drawing.Size(1036, 360);
             this.gcSkew.TabIndex = 19;
             this.gcSkew.Text = "chart1";
+            title1.Alignment = System.Drawing.ContentAlignment.TopCenter;
+            title1.DockedToChartArea = "ChartArea1";
+            title1.IsDockedInsideChartArea = false;
+            title1.Name = "Title1";
+            title1.Text = "Gráfico de Desaminação - Curva GC no genoma";
+            this.gcSkew.Titles.Add(title1);
             this.gcSkew.PostPaint += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ChartPaintEventArgs>(this.gcSkew_PostPaint);
             this.gcSkew.PrePaint += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ChartPaintEventArgs>(this.gcSkew_PrePaint);
             // 
@@ -540,6 +565,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.lblProgressoGenoma);
+            this.groupBox1.Controls.Add(this.lblPorcentagem);
             this.groupBox1.Controls.Add(this.btnCancelar);
             this.groupBox1.Controls.Add(this.lblBarraProgressoDescricao);
             this.groupBox1.Controls.Add(this.progressBar);
@@ -563,6 +590,35 @@
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Genoma a ser analisado";
+            // 
+            // lblProgressoGenoma
+            // 
+            this.lblProgressoGenoma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblProgressoGenoma.AutoSize = true;
+            this.lblProgressoGenoma.Location = new System.Drawing.Point(361, 141);
+            this.lblProgressoGenoma.Name = "lblProgressoGenoma";
+            this.lblProgressoGenoma.Size = new System.Drawing.Size(0, 13);
+            this.lblProgressoGenoma.TabIndex = 29;
+            // 
+            // lblPorcentagem
+            // 
+            this.lblPorcentagem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblPorcentagem.AutoSize = true;
+            this.lblPorcentagem.Location = new System.Drawing.Point(672, 141);
+            this.lblPorcentagem.Name = "lblPorcentagem";
+            this.lblPorcentagem.Size = new System.Drawing.Size(0, 13);
+            this.lblPorcentagem.TabIndex = 27;
+            this.lblPorcentagem.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // btnCancelar
+            // 
+            this.btnCancelar.Location = new System.Drawing.Point(720, 159);
+            this.btnCancelar.Name = "btnCancelar";
+            this.btnCancelar.Size = new System.Drawing.Size(118, 23);
+            this.btnCancelar.TabIndex = 25;
+            this.btnCancelar.Text = "Cancelar Busca";
+            this.btnCancelar.UseVisualStyleBackColor = true;
+            this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
             // 
             // lblBarraProgressoDescricao
             // 
@@ -712,15 +768,21 @@
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
-            // btnCancelar
+            // backgroundWorker2
             // 
-            this.btnCancelar.Location = new System.Drawing.Point(720, 159);
-            this.btnCancelar.Name = "btnCancelar";
-            this.btnCancelar.Size = new System.Drawing.Size(118, 23);
-            this.btnCancelar.TabIndex = 25;
-            this.btnCancelar.Text = "Cancelar Busca";
-            this.btnCancelar.UseVisualStyleBackColor = true;
-            this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
+            this.backgroundWorker2.WorkerReportsProgress = true;
+            this.backgroundWorker2.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker2_DoWork);
+            this.backgroundWorker2.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker2_ProgressChanged);
+            this.backgroundWorker2.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker2_RunWorkerCompleted);
+            // 
+            // timer
+            // 
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
+            // 
+            // timerProgressoGenoma
+            // 
+            this.timerProgressoGenoma.Interval = 50;
+            this.timerProgressoGenoma.Tick += new System.EventHandler(this.timerProgressoGenoma_Tick);
             // 
             // Form1
             // 
@@ -833,6 +895,11 @@
         private System.Windows.Forms.TextBox textNumeroOcorrencias;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Button btnCancelar;
+        private System.ComponentModel.BackgroundWorker backgroundWorker2;
+        private System.Windows.Forms.Label lblPorcentagem;
+        private System.Windows.Forms.Timer timer;
+        private System.Windows.Forms.Label lblProgressoGenoma;
+        private System.Windows.Forms.Timer timerProgressoGenoma;
     }
 }
 

@@ -15,7 +15,8 @@ namespace BioInformaticaProj.Source.Model
         public List<String> arquivoPuro = null;
         public String genoma;
         public String tituloMaterial = null;
-       
+        public StreamReader arquivoFasta;
+
         public void excluirFasta()
         {
             tamanho = 0;
@@ -25,7 +26,7 @@ namespace BioInformaticaProj.Source.Model
             tituloMaterial = null;
         }
 
-        public void  organizarEstrutura(StreamReader arquivoFasta)
+        public void  organizarEstrutura()
         {
             if (arquivoPuro == null)
             {
@@ -38,11 +39,12 @@ namespace BioInformaticaProj.Source.Model
             }
 
             arquivoPuro.Add(arquivoFasta.ReadLine());
+            arquivoPuro.Add("");
             while (!arquivoFasta.EndOfStream)
             {
-                arquivoPuro.Add(arquivoFasta.ReadLine());
+                arquivoPuro[1]  = arquivoPuro[1] + arquivoFasta.ReadLine();
             }
-            
+            /*
             foreach (String temp in arquivoPuro){
                 if (!(temp.Contains(">")))
                 {
@@ -50,7 +52,9 @@ namespace BioInformaticaProj.Source.Model
                 }
                 else { tituloMaterial = temp; };
             }
-
+            */
+            tituloMaterial = arquivoPuro[0];
+            genoma = arquivoPuro[1];
             tamanho = genoma.Length;
             
         }  

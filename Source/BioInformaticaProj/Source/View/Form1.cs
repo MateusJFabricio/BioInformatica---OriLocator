@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,8 @@ namespace BioInformaticaProj
         int QuantidadeMers;
         int TamanhoOri;
         int DistHamming;
+        StreamReader streamFasta;
+        String nomeArquivoFasta;
 
         public Form1()
         {
@@ -46,14 +49,20 @@ namespace BioInformaticaProj
                 return;
             }
 
-            System.IO.StreamReader sr = new System.IO.StreamReader(openFileDialog1.FileName);
-            if (controller.carregarArquivoFasta(sr, openFileDialog1.FileName))
-                statusStrip1.Items[0].Text = "Arquivo carregado.";
-
-            textTituloGenoma.Text = controller.tituloMaterial;
-   
+            streamFasta = new System.IO.StreamReader(openFileDialog1.FileName);
+            nomeArquivoFasta = openFileDialog1.FileName;
+            btnLimpar.Enabled = false;
+            btnBuscarArquivo.Enabled = false;
+            lblBarraProgressoDescricao.Text = "Carregando arquivo fasta";
+            backgroundWorker2.RunWorkerAsync();
+            //define a progressBar para Marquee
+            progressBar.Style = ProgressBarStyle.Blocks;
+            progressBar.Value = 0;
+            lblPorcentagem.Text = "0 %";
+            timer.Enabled = true;
+            timerProgressoGenoma.Enabled = true;
         }
-       
+        
         private void btnLimpar_Click(object sender, EventArgs e)
         {
             controller.listSkew.Clear();
@@ -222,12 +231,14 @@ namespace BioInformaticaProj
             for (int i = 0; i < controller.listSkew.Count; i++)
             {
                 if (incremento == 1000)
-                {
-                    gcSkew.Series["desaminacao_gc"].Points.AddXY(i * 10, controller.listSkew[i]);
-                    incremento = 0;
+               {
+                    gcSkew.Series["desaminacao_gc"].Points.AddXY(i, controller.listSkew[i]);
+                    incremento = 0; 
                 }
                 incremento = incremento + 1;
             }
+
+            gcSkew.Show();
 
         }
 
@@ -236,10 +247,12 @@ namespace BioInformaticaProj
 
             try
              {
+                lblPorcentagem.Visible = false;
                 btnIniciarBusca.Enabled = false;
                 btnBuscarArquivo.Enabled = false;
                 btnLimpar.Enabled = false;
                 btnCancelar.Visible = true;
+                gcSkew.Hide();
 
                 TamanhoAglomerado = Convert.ToInt32(textTamanhoAglomerado.Text);
                 QuantidadeMers = Convert.ToInt32(textQuantidadeMers.Text);
@@ -254,7 +267,7 @@ namespace BioInformaticaProj
                 ValidarCamposBusca();
                 statusStrip1.Items[0].Text = "Buscando a região ORI. Aguarde o termino do processo....";
 
-
+                lblBarraProgressoDescricao.Text = "Progresso da busca pelo Ori";
                 backgroundWorker1.RunWorkerAsync();
                 //define a progressBar para Marquee
                 progressBar.Style = ProgressBarStyle.Marquee;
@@ -300,7 +313,6 @@ namespace BioInformaticaProj
                     TamanhoOri,
                     DistHamming
                     );
-
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -351,6 +363,7 @@ namespace BioInformaticaProj
             btnBuscarArquivo.Enabled = true;
             btnLimpar.Enabled = true;
             btnCancelar.Visible = false;
+            gcSkew.Show();
 
         }
 
@@ -365,6 +378,61 @@ namespace BioInformaticaProj
             }
             lblBarraProgressoDescricao.Text = "Cancelando busca";
             btnCancelar.Visible = false;
+        }
+
+        private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
+        {
+            backgroundWorker2.ReportProgress(0);
+            controller.carregarArquivoFasta(streamFasta, nomeArquivoFasta);
+        }
+
+        private void backgroundWorker2_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error != null)
+            {
+                //informa ao usuario do acontecimento de algum erro.
+                lblBarraProgressoDescricao.Text = "Aconteceu um erro durante a execução do processo!";
+
+                // reconfigura a progressbar para o padrao.
+                progressBar.MarqueeAnimationSpeed = 0;
+                progressBar.Style = ProgressBarStyle.Blocks;
+                progressBar.Value = 0;
+            }
+            else
+            {
+                //Carrega todo progressbar.
+                progressBar.MarqueeAnimationSpeed = 0;
+                progressBar.Style = ProgressBarStyle.Blocks;
+                progressBar.Value = 100;
+                lblBarraProgressoDescricao.Text = "Arquivo FASTA carregado";
+            }
+
+            statusStrip1.Items[0].Text = "Arquivo carregado.";
+            textTituloGenoma.Text = controller.tituloMaterial;
+            btnBuscarArquivo.Enabled = true;
+            btnLimpar.Enabled = true;
+            timer.Enabled = false;
+            timerProgressoGenoma.Enabled = false;
+        }
+
+        private void backgroundWorker2_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar.Value = e.ProgressPercentage;
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            StreamReader arq = controller.arquivoFasta.arquivoFasta;
+            int progresso = Convert.ToInt32((100  / (double)arq.BaseStream.Length) * (double)arq.BaseStream.Position);
+            lblPorcentagem.Text =  progresso.ToString() + " %";
+            backgroundWorker2.ReportProgress(progresso);
+        }
+
+        private void timerProgressoGenoma_Tick(object sender, EventArgs e)
+        {
+            String temp = controller.arquivoFasta.arquivoPuro[1];
+            lblProgressoGenoma.Text = temp.Substring(temp.Length - 30, 30) + "...";
+
         }
     }
 }

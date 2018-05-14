@@ -11,9 +11,10 @@ namespace BioInformaticaProj.Source.Controller
 
     class Controller
     {
-        ArquivoFasta arquivoFasta;
+        public ArquivoFasta arquivoFasta;
         public String tituloMaterial;
         public List<int> listSkew;
+        public int ValeSkew;
         public DadosRegiaoOri Resultado;
 
         public Controller()
@@ -23,12 +24,13 @@ namespace BioInformaticaProj.Source.Controller
             Resultado = new DadosRegiaoOri();
         }
 
-        public bool carregarArquivoFasta(StreamReader sr, String _diretorio)
+        public void carregarArquivoFasta(StreamReader sr, String _diretorio)
         {
             arquivoFasta.diretorio = _diretorio;
-            arquivoFasta.organizarEstrutura(sr);
+            arquivoFasta.arquivoFasta = sr;
+            arquivoFasta.organizarEstrutura();
             this.tituloMaterial = arquivoFasta.tituloMaterial;
-            return true;
+            
         }
 
         public void limparFasta()
@@ -45,6 +47,7 @@ namespace BioInformaticaProj.Source.Controller
             skew.tamanhoRegiaoOri = tamanhoRegiaoOri;
             skew.GerarSkewDiagram();
             listSkew = skew.listSkew;
+            ValeSkew = skew.listValesSkew[0];
 
             algoritmoBusca.tamanhoAglomerado = tamanhoAglomerado;
             algoritmoBusca.tamanhoRegiaoOri = tamanhoRegiaoOri;
